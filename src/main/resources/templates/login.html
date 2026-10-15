@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Вход')}"></head>
+<body class="auth-page">
+<main class="card auth-card">
+    <h1>📚 Читальня</h1>
+    <p class="muted">Онлайн-бронирование книг в библиотеке</p>
+
+    <div class="alert alert-error" th:if="${param.error}">Неверный логин или пароль</div>
+    <div class="alert alert-success" th:if="${param.logout}">Вы вышли из системы</div>
+    <div class="alert alert-success" th:if="${param.registered}">Регистрация прошла успешно, войдите</div>
+
+    <form th:action="@{/login}" method="post" class="form">
+        <label>Логин <input type="text" name="username" required autofocus></label>
+        <label>Пароль <input type="password" name="password" required></label>
+        <button class="btn btn-primary" type="submit">Войти</button>
+    </form>
+    <p class="muted">Нет аккаунта? <a th:href="@{/register}">Зарегистрироваться</a></p>
+    <div class="hint">
+        Демо-аккаунты:<br>
+        <b>admin / admin</b> — библиотекарь<br>
+        <b>client / client</b> — читатель
+    </div>
+</main>
+</body>
+</html>

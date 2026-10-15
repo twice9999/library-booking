@@ -1,0 +1,32 @@
+# Профиль по умолчанию — для запуска из IntelliJ IDEA без Docker:
+# встроенная база H2 и хранение обложек в папке ./data
+server:
+  port: 8080
+
+spring:
+  application:
+    name: library-booking
+  datasource:
+    url: jdbc:h2:mem:library;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  thymeleaf:
+    cache: false
+
+app:
+  storage:
+    type: local
+    local-dir: ./data
+  minio:
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket: book-covers

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Каталог')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+
+    <div class="page-head">
+        <h1>Каталог книг</h1>
+        <a class="btn btn-primary" th:href="@{/books/new}" sec:authorize="hasRole('ADMIN')">+ Добавить книгу</a>
+    </div>
+
+    <form class="filters" th:action="@{/books}" method="get">
+        <input type="search" name="q" th:value="${q}" placeholder="Название или автор">
+        <select name="genre">
+            <option value="">Все жанры</option>
+            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}" th:selected="${g == genre}"></option>
+        </select>
+        <label class="check"><input type="checkbox" name="onlyAvailable" value="true" th:checked="${onlyAvailable}"> Только в наличии</label>
+        <button class="btn" type="submit">Найти</button>
+    </form>
+
+    <p class="muted" th:if="${#lists.isEmpty(books)}">Ничего не найдено.</p>
+
+    <div class="grid">
+        <a class="card book-card" th:each="b : ${books}" th:href="@{/books/{id}(id=${b.id})}">
+            <div class="cover">
+                <img th:if="${b.coverKey}" th:src="@{/books/{id}/cover(id=${b.id})}" alt="Обложка">
+                <span th:unless="${b.coverKey}" class="cover-placeholder" th:text="${#strings.substring(b.title,0,1)}">А</span>
+            </div>
+            <div class="book-info">
+                <h3 th:text="${b.title}">Название</h3>
+                <p class="muted" th:text="${b.author}">Автор</p>
+                <p class="meta">
+                    <span class="tag" th:if="${b.genre}" th:text="${b.genre}">жанр</span>
+                    <span th:if="${b.publishYear}" th:text="${b.publishYear}">год</span>
+                </p>
+                <p th:with="av=${availability.get(b.id)}">
+                    <span th:if="${av > 0}" class="status status-ok" th:text="'В наличии: ' + ${av} + ' из ' + ${b.totalCopies}"></span>
+                    <span th:if="${av == 0}" class="status status-bad">Нет в наличии</span>
+                </p>
+            </div>
+        </a>
+    </div>
+</main>
+</body>
+</html>

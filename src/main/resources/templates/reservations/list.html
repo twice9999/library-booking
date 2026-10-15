@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Брони')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+    <div class="page-head">
+        <h1 sec:authorize="hasRole('CLIENT')">Мои брони</h1>
+        <h1 sec:authorize="hasRole('ADMIN')">Все брони</h1>
+        <form th:action="@{/reservations}" method="get" class="filters">
+            <select name="status" onchange="this.form.submit()">
+                <option value="">Все статусы</option>
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.title}" th:selected="${s == status}"></option>
+            </select>
+        </form>
+    </div>
+
+    <p class="muted" th:if="${#lists.isEmpty(reservations)}">
+        Броней пока нет. <a th:href="@{/books}">Перейти в каталог</a>
+    </p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(reservations)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Книга</th>
+                <th sec:authorize="hasRole('ADMIN')">Читатель</th>
+                <th>Создана</th>
+                <th>До</th>
+                <th>Статус</th>
+                <th>Комментарий</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${reservations}" th:classappend="${r.overdue} ? 'overdue'">
+                <td th:text="${r.id}">1</td>
+                <td><a th:href="@{/books/{id}(id=${r.book.id})}" th:text="${r.book.title}">Книга</a></td>
+                <td sec:authorize="hasRole('ADMIN')" th:text="${r.user.fullName} + ' (' + ${r.user.username} + ')'"></td>
+                <td th:text="${#temporals.format(r.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
+                <td>
+                    <span th:text="${#temporals.format(r.dueDate, 'dd.MM.yyyy')}"></span>
+                    <span th:if="${r.overdue}" class="status status-bad">просрочена</span>
+                </td>
+                <td><span class="status" th:classappend="'st-' + ${r.status}" th:text="${r.status.title}"></span></td>
+                <td th:text="${r.comment}"></td>
+                <td class="row-actions">
+                    <a class="btn btn-sm" th:href="@{/reservations/{id}/edit(id=${r.id})}"
+                       th:if="${r.status.open or #authorization.expression('hasRole(''ADMIN'')')}">Изменить</a>
+                    <form th:if="${r.status.name() == 'ACTIVE'}" th:action="@{/reservations/{id}/cancel(id=${r.id})}"
+                          method="post" class="inline">
+                        <button class="btn btn-sm btn-ghost" type="submit">Отменить</button>
+                    </form>
+                    <form th:if="${r.status.name() != 'ISSUED' and (!r.status.open or #authorization.expression('hasRole(''ADMIN'')'))}"
+                          th:action="@{/reservations/{id}/delete(id=${r.id})}" method="post" class="inline"
+                          onsubmit="return confirm('Удалить запись о брони?')">
+                        <button class="btn btn-sm btn-danger" type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

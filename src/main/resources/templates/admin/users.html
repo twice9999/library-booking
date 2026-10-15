@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Читатели')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container">
+    <h1>Пользователи</h1>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+            <tr><th>ID</th><th>Логин</th><th>Имя</th><th>Роль</th><th>Зарегистрирован</th><th>Всего броней</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.username}"></td>
+                <td th:text="${u.fullName}"></td>
+                <td><span class="badge" th:text="${u.role.title}"></span></td>
+                <td th:text="${#temporals.format(u.createdAt, 'dd.MM.yyyy')}"></td>
+                <td th:text="${counts.get(u.id)}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

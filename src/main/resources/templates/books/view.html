@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${book.title})}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+    <p><a th:href="@{/books}">← Каталог</a></p>
+
+    <div class="card book-detail">
+        <div class="cover cover-lg">
+            <img th:if="${book.coverKey}" th:src="@{/books/{id}/cover(id=${book.id})}" alt="Обложка">
+            <span th:unless="${book.coverKey}" class="cover-placeholder" th:text="${#strings.substring(book.title,0,1)}">А</span>
+        </div>
+        <div class="book-body">
+            <h1 th:text="${book.title}">Название</h1>
+            <p class="lead" th:text="${book.author}">Автор</p>
+            <p class="meta">
+                <span class="tag" th:if="${book.genre}" th:text="${book.genre}"></span>
+                <span th:if="${book.publishYear}" th:text="${book.publishYear} + ' г.'"></span>
+            </p>
+            <p th:if="${book.description}" th:text="${book.description}" class="description"></p>
+            <p>
+                <span th:if="${available > 0}" class="status status-ok"
+                      th:text="'В наличии: ' + ${available} + ' из ' + ${book.totalCopies}"></span>
+                <span th:if="${available == 0}" class="status status-bad">Все экземпляры заняты</span>
+            </p>
+
+            <!-- Бронирование: только для читателя -->
+            <div sec:authorize="hasRole('CLIENT')">
+                <p th:if="${hasReservation}" class="alert alert-info">
+                    У вас уже есть активная бронь этой книги — <a th:href="@{/reservations}">мои брони</a>.
+                </p>
+                <form th:if="${!hasReservation and available > 0}" th:action="@{/reservations}" method="post" class="form form-inline-box">
+                    <input type="hidden" name="bookId" th:value="${book.id}">
+                    <label>Срок, дней
+                        <input type="number" name="days" value="14" min="1" th:max="${maxDays}" required>
+                    </label>
+                    <label>Комментарий
+                        <input type="text" name="comment" maxlength="500" placeholder="Например: заберу в субботу">
+                    </label>
+                    <button class="btn btn-primary" type="submit">Забронировать</button>
+                </form>
+            </div>
+
+            <!-- Управление: только для библиотекаря -->
+            <div class="actions" sec:authorize="hasRole('ADMIN')">
+                <a class="btn" th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
+                <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post" class="inline"
+                      onsubmit="return confirm('Удалить книгу безвозвратно?')">
+                    <button class="btn btn-danger" type="submit">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

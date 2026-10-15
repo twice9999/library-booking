@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Бронь №' + ${r.id})}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container narrow">
+    <div th:replace="~{fragments :: flash}"></div>
+    <p><a th:href="@{/reservations}">← К броням</a></p>
+    <h1 th:text="'Бронь №' + ${r.id}">Бронь</h1>
+
+    <div class="card">
+        <p><b>Книга:</b> <a th:href="@{/books/{id}(id=${r.book.id})}" th:text="${r.book.title}"></a>, <span th:text="${r.book.author}"></span></p>
+        <p><b>Читатель:</b> <span th:text="${r.user.fullName}"></span></p>
+        <p><b>Создана:</b> <span th:text="${#temporals.format(r.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>
+        <p><b>Статус:</b> <span class="status" th:classappend="'st-' + ${r.status}" th:text="${r.status.title}"></span></p>
+    </div>
+
+    <form class="card form" th:action="@{/reservations/{id}(id=${r.id})}" method="post">
+        <label>Забронировано до
+            <input type="date" name="dueDate" th:value="${r.dueDate}" required>
+            <small class="muted">Максимум — 30 дней с даты создания брони</small>
+        </label>
+        <label>Комментарий
+            <input type="text" name="comment" maxlength="500" th:value="${r.comment}">
+        </label>
+        <label sec:authorize="hasRole('ADMIN')">Статус
+            <select name="status">
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.title}" th:selected="${s == r.status}"></option>
+            </select>
+            <small class="muted">Забронирована → Выдана → Возвращена, или Забронирована → Отменена</small>
+        </label>
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${book == null ? 'Новая книга' : 'Редактирование'})}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="container narrow">
+    <p><a th:href="${book == null} ? @{/books} : @{/books/{id}(id=${book.id})}">← Назад</a></p>
+    <h1 th:text="${book == null ? 'Новая книга' : 'Редактирование книги'}">Книга</h1>
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+    <form class="card form" method="post" enctype="multipart/form-data" th:object="${form}"
+          th:action="${book == null} ? @{/books} : @{/books/{id}(id=${book.id})}">
+        <label>Название *
+            <input type="text" th:field="*{title}" required>
+            <span class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+        </label>
+        <label>Автор *
+            <input type="text" th:field="*{author}" required>
+            <span class="field-error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
+        </label>
+        <div class="row">
+            <label>Жанр
+                <input type="text" th:field="*{genre}" placeholder="Роман, Фантастика…">
+                <span class="field-error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+            </label>
+            <label>Год издания
+                <input type="number" th:field="*{publishYear}">
+                <span class="field-error" th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}"></span>
+            </label>
+            <label>Экземпляров *
+                <input type="number" th:field="*{totalCopies}" min="0" required>
+                <span class="field-error" th:if="${#fields.hasErrors('totalCopies')}" th:errors="*{totalCopies}"></span>
+            </label>
+        </div>
+        <label>Описание
+            <textarea th:field="*{description}" rows="5"></textarea>
+            <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+        </label>
+        <label>Обложка (jpg, png, gif, webp — до 5 МБ)
+            <input type="file" name="cover" accept="image/*">
+        </label>
+        <label class="check" th:if="${book != null and book.coverKey != null}">
+            <input type="checkbox" name="removeCover" value="true"> Удалить текущую обложку
+        </label>
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+</main>
+</body>
+</html>

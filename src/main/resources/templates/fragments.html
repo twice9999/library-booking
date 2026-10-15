@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' — Читальня'">Читальня</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:fragment="nav" class="topbar">
+    <div class="container topbar-inner">
+        <a class="brand" th:href="@{/books}">📚 Читальня</a>
+        <nav class="menu" sec:authorize="isAuthenticated()">
+            <a th:href="@{/books}">Каталог</a>
+            <a th:href="@{/reservations}" sec:authorize="hasRole('CLIENT')">Мои брони</a>
+            <a th:href="@{/reservations}" sec:authorize="hasRole('ADMIN')">Все брони</a>
+            <a th:href="@{/books/new}" sec:authorize="hasRole('ADMIN')">+ Книга</a>
+            <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">Читатели</a>
+        </nav>
+        <div class="user" sec:authorize="isAuthenticated()">
+            <span>
+                <span th:text="${#authentication.principal.fullName}">Имя</span>
+                <span class="badge" th:text="${#authentication.principal.role.title}">роль</span>
+            </span>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="btn btn-ghost btn-sm" type="submit">Выйти</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div th:fragment="flash">
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+</body>
+</html>

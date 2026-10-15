@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Ошибка')}"></head>
+<body class="auth-page">
+<main class="card auth-card">
+    <h1 th:text="${code ?: status ?: 'Ошибка'}">Ошибка</h1>
+    <p th:text="${message != null and message != '' ? message : 'Что-то пошло не так'}">Что-то пошло не так</p>
+    <a class="btn btn-primary" th:href="@{/books}">В каталог</a>
+</main>
+</body>
+</html>
