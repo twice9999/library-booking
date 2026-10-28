@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.library.booking.exception.NotFoundException;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /** Интеграция с S3-совместимым хранилищем MinIO: обложки книг хранятся как key -> value. */
@@ -51,6 +52,21 @@ public class MinioFileStorage implements FileStorage {
                     .contentType(StorageKeys.contentTypeByKey(key))
                     .build());
             return key;
+        } catch (Exception e) {
+            throw new IllegalStateException("Не удалось загрузить файл в MinIO: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void put(String key, byte[] data) {
+        try (InputStream in = new ByteArrayInputStream(data)) {
+            ensureBucket();
+            client.putObject(PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(key)
+                    .stream(in, data.length, -1)
+                    .contentType(StorageKeys.contentTypeByKey(key))
+                    .build());
         } catch (Exception e) {
             throw new IllegalStateException("Не удалось загрузить файл в MinIO: " + e.getMessage(), e);
         }

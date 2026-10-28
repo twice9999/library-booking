@@ -36,6 +36,17 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
+    public void put(String key, byte[] data) {
+        try {
+            Path target = resolve(key);
+            Files.createDirectories(target.getParent());
+            Files.write(target, data);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Не удалось сохранить файл", e);
+        }
+    }
+
+    @Override
     public StoredFile load(String key) {
         Path path = resolve(key);
         if (!Files.exists(path)) {

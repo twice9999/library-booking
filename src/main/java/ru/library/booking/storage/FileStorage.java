@@ -11,6 +11,9 @@ public interface FileStorage {
     /** Сохраняет файл и возвращает его ключ. */
     String save(MultipartFile file);
 
+    /** Сохраняет готовые байты под заданным ключом (используется для демо-обложек). */
+    void put(String key, byte[] data);
+
     /** Загружает файл по ключу. */
     StoredFile load(String key);
 
