@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: library
       POSTGRES_PASSWORD: library
     ports:
-      - "5432:5432"
+      - "5433:5432"   # снаружи 5433, чтобы не конфликтовать с локальным PostgreSQL
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

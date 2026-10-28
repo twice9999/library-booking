@@ -29,7 +29,7 @@ docker compose up --build
 | Сервис        | Адрес                  | Что это                                  |
 |---------------|------------------------|------------------------------------------|
 | app           | http://localhost:8080  | Сервер и веб-интерфейс                   |
-| db            | localhost:5432         | PostgreSQL (library / library)           |
+| db            | localhost:5433         | PostgreSQL (library / library)           |
 | minio         | http://localhost:9001  | Консоль S3-хранилища (minioadmin / minioadmin) |
 
 Остановить: `docker compose down` (с удалением данных: `docker compose down -v`).
