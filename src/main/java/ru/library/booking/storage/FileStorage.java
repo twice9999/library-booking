@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Хранилище файлов по принципу key-value.
- * В Docker используется MinIO (S3), при запуске из IDE — локальная папка.
+ * В Docker используется MinIO (S3), при запуске из IDE - локальная папка.
  */
 public interface FileStorage {
 

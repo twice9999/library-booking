@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/css/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/*/cover").permitAll()
-                        // управление каталогом и пользователями — только библиотекарь
+                        // управление каталогом и пользователями - только библиотекарь
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/books/new", "/books/*/edit", "/books/*/delete").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/books", "/books/*").hasRole("ADMIN")

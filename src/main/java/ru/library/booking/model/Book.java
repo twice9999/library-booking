@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-/** Бизнес-сущность №1 — книга в каталоге библиотеки. */
+/** Бизнес-сущность №1 - книга в каталоге библиотеки. */
 @Entity
 @Table(name = "books")
 public class Book {

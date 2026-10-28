@@ -31,7 +31,7 @@ public class ReservationService {
     @Transactional
     public Reservation create(User user, Long bookId, int days, String comment) {
         if (days < 1 || days > MAX_DAYS) {
-            throw new BusinessException("Срок брони — от 1 до " + MAX_DAYS + " дней");
+            throw new BusinessException("Срок брони - от 1 до " + MAX_DAYS + " дней");
         }
         Book book = bookService.get(bookId);
         if (bookService.available(book) <= 0) {
@@ -94,7 +94,7 @@ public class ReservationService {
                 throw new BusinessException("Дата не может быть в прошлом");
             }
             if (dueDate.isAfter(max) && !actor.isAdmin()) {
-                throw new BusinessException("Максимальный срок — " + MAX_DAYS + " дней с даты брони (до " + max + ")");
+                throw new BusinessException("Максимальный срок - " + MAX_DAYS + " дней с даты брони (до " + max + ")");
             }
             r.setDueDate(dueDate);
         }
@@ -123,7 +123,7 @@ public class ReservationService {
             throw new BusinessException("Сначала отмените бронь, потом её можно удалить из истории");
         }
         if (r.getStatus() == ReservationStatus.ISSUED) {
-            throw new BusinessException("Книга на руках у читателя — сначала примите возврат");
+            throw new BusinessException("Книга на руках у читателя - сначала примите возврат");
         }
         reservations.delete(r);
     }

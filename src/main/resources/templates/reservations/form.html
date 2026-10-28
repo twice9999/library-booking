@@ -18,7 +18,7 @@
     <form class="card form" th:action="@{/reservations/{id}(id=${r.id})}" method="post">
         <label>Забронировано до
             <input type="date" name="dueDate" th:value="${r.dueDate}" required>
-            <small class="muted">Максимум — 30 дней с даты создания брони</small>
+            <small class="muted">Максимум - 30 дней с даты создания брони</small>
         </label>
         <label>Комментарий
             <input type="text" name="comment" maxlength="500" th:value="${r.comment}">

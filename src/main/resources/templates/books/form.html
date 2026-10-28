@@ -36,7 +36,7 @@
             <textarea th:field="*{description}" rows="5"></textarea>
             <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
         </label>
-        <label>Обложка (jpg, png, gif, webp — до 5 МБ)
+        <label>Обложка (jpg, png, gif, webp - до 5 МБ)
             <input type="file" name="cover" accept="image/*">
         </label>
         <label class="check" th:if="${book != null and book.coverKey != null}">

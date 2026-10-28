@@ -22,7 +22,7 @@ import ru.library.booking.storage.StoredFile;
 import java.time.Duration;
 import java.util.List;
 
-/** CRUD книг: читать могут все, изменять — только библиотекарь (см. SecurityConfig). */
+/** CRUD книг: читать могут все, изменять - только библиотекарь (см. SecurityConfig). */
 @Controller
 @RequestMapping("/books")
 public class BookController {

@@ -84,7 +84,7 @@ public class BookService {
         long taken = reservations.countByBookAndStatusIn(book, ReservationStatus.OCCUPYING);
         if (form.getTotalCopies() < taken) {
             throw new BusinessException("Нельзя уменьшить число экземпляров ниже " + taken
-                    + " — столько сейчас забронировано или выдано");
+                    + " - столько сейчас забронировано или выдано");
         }
         form.applyTo(book);
         if (hasFile(cover)) {

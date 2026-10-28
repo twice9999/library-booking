@@ -14,7 +14,7 @@ import ru.library.booking.service.ReservationService;
 
 import java.time.LocalDate;
 
-/** CRUD броней. Читатель видит и меняет только свои, библиотекарь — все. */
+/** CRUD броней. Читатель видит и меняет только свои, библиотекарь - все. */
 @Controller
 @RequestMapping("/reservations")
 public class ReservationController {

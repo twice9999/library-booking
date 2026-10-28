@@ -11,7 +11,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Хранение обложек в локальной папке — для запуска из IntelliJ IDEA без Docker. */
+/** Хранение обложек в локальной папке - для запуска из IntelliJ IDEA без Docker. */
 @Component
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "local", matchIfMissing = true)
 public class LocalFileStorage implements FileStorage {

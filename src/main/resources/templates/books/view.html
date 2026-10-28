@@ -29,7 +29,7 @@
             <!-- Бронирование: только для читателя -->
             <div sec:authorize="hasRole('CLIENT')">
                 <p th:if="${hasReservation}" class="alert alert-info">
-                    У вас уже есть активная бронь этой книги — <a th:href="@{/reservations}">мои брони</a>.
+                    У вас уже есть активная бронь этой книги - <a th:href="@{/reservations}">мои брони</a>.
                 </p>
                 <form th:if="${!hasReservation and available > 0}" th:action="@{/reservations}" method="post" class="form form-inline-box">
                     <input type="hidden" name="bookId" th:value="${book.id}">

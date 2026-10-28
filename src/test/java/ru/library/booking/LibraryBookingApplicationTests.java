@@ -85,7 +85,7 @@ class LibraryBookingApplicationTests {
         assertThat(r.getStatus()).isEqualTo(ReservationStatus.ACTIVE);
         assertThat(r.getDueDate()).isEqualTo(LocalDate.now().plusDays(7));
 
-        // экземпляр один — повторно забронировать нельзя
+        // экземпляр один - повторно забронировать нельзя
         assertThatThrownBy(() -> reservations.create(admin, book.getId(), 7, null))
                 .isInstanceOf(BusinessException.class);
 

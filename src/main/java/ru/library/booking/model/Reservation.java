@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/** Бизнес-сущность №2 — бронь книги читателем. */
+/** Бизнес-сущность №2 - бронь книги читателем. */
 @Entity
 @Table(name = "reservations")
 public class Reservation {
