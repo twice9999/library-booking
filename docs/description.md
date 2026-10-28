@@ -1,9 +1,10 @@
----
-title: "«Читальня» — система онлайн-бронирования книг в библиотеке"
-subtitle: "Описание проекта"
----
+# 📚 «Читальня» — описание проекта
 
-# 1. Назначение и проблема
+Система онлайн-бронирования книг в библиотеке.
+
+> См. также: [Use cases](use-cases.md) · [README](../README.md)
+
+## 1. Назначение и проблема
 
 В небольших библиотеках (районных, школьных, университетских) читатель часто не знает, есть ли нужная книга на полке, пока не придёт лично. Библиотекарь, в свою очередь, ведёт учёт выдачи вручную или в таблицах, из-за чего теряются сведения о том, кто и когда взял экземпляр.
 
@@ -12,7 +13,7 @@ subtitle: "Описание проекта"
 - читатель видит каталог с актуальным количеством свободных экземпляров и может заранее забронировать книгу на удобный срок;
 - библиотекарь ведёт каталог, видит все брони и отмечает выдачу и возврат книг в одном месте.
 
-# 2. Роли пользователей
+## 2. Роли пользователей
 
 | Роль | Кто это | Что может |
 |---|---|---|
@@ -22,7 +23,7 @@ subtitle: "Описание проекта"
 
 Авторизация — Spring Security: вход по логину и паролю, пароли хранятся как BCrypt-хэш, доступ к страницам ограничен ролью. Новые пользователи регистрируются читателями, библиотекарь создаётся при первом запуске.
 
-# 3. Бизнес-сущности и CRUD
+## 3. Бизнес-сущности и CRUD
 
 В системе две бизнес-сущности, для каждой реализован полный CRUD.
 
@@ -54,12 +55,19 @@ subtitle: "Описание проекта"
 - нельзя уменьшить число экземпляров книги ниже количества уже занятых;
 - нельзя удалить книгу, пока по ней есть открытые брони.
 
-# 4. Архитектура
+## 4. Архитектура
 
 Приложение построено по классической трёхслойной схеме и разворачивается в трёх Docker-контейнерах:
 
-- **Браузер** → **app**: UI → Controller → Service → Repository → **db** (PostgreSQL)
-- **app**: Service → **minio** (S3-хранилище обложек)
+```mermaid
+flowchart LR
+    B[Браузер] -->|HTTP :8080| APP
+    subgraph APP[Контейнер app — Spring Boot]
+        UI[UI: Thymeleaf] --> C[Controller] --> S[Service] --> R[Repository]
+    end
+    R -->|JDBC| DB[(Контейнер db<br/>PostgreSQL)]
+    S -->|S3 API| M[(Контейнер minio<br/>обложки книг)]
+```
 
 | Контейнер | Образ | Назначение |
 |---|---|---|
@@ -70,11 +78,11 @@ subtitle: "Описание проекта"
 Слои кода:
 
 - **controller** — принимает HTTP-запросы, проверяет формы, показывает страницы;
-- **service** — бизнес-правила и CRUD-операции (`BookService`, `ReservationService`, `UserService`);
+- **service** — бизнес-правила и CRUD-операции ([`BookService`](../src/main/java/ru/library/booking/service/BookService.java), [`ReservationService`](../src/main/java/ru/library/booking/service/ReservationService.java), [`UserService`](../src/main/java/ru/library/booking/service/UserService.java));
 - **repository** — доступ к БД через Spring Data JPA;
 - **storage** — абстракция `FileStorage` с двумя реализациями: `MinioFileStorage` (в Docker) и `LocalFileStorage` (для запуска из IDE без Docker).
 
-# 5. Интеграция с S3 (MinIO)
+## 5. Интеграция с S3 (MinIO)
 
 Обложки книг хранятся не в базе данных, а во внешнем объектном хранилище MinIO, совместимом с Amazon S3. Хранилище работает по принципу **ключ → значение**:
 
@@ -86,7 +94,7 @@ subtitle: "Описание проекта"
 
 Бакет создаётся автоматически; содержимое видно в консоли MinIO на `http://localhost:9001`.
 
-# 6. Модель данных
+## 6. Модель данных
 
 | Таблица | Основные поля |
 |---|---|
@@ -94,19 +102,19 @@ subtitle: "Описание проекта"
 | `books` | id, title, author, genre, publish_year, description, total_copies, cover_key, created_at |
 | `reservations` | id, user_id → users, book_id → books, status, created_at, due_date, note |
 
-# 7. Технологии и запуск
+## 7. Технологии и запуск
 
 Java 17, Spring Boot 3 (Web MVC, Security, Data JPA, Validation), Thymeleaf, PostgreSQL 16 (в Docker) / H2 (при запуске из IDE и в тестах), MinIO (клиент `io.minio`), Maven, Docker Compose, JUnit 5 + MockMvc, Git.
 
 Запуск из IntelliJ IDEA: открыть папку проекта и запустить `LibraryBookingApplication`. Полный стенд: `docker compose up --build`. Адрес — `http://localhost:8080`, демо-аккаунты `admin / admin` и `client / client`.
 
-# 8. Соответствие требованиям задания
+## 8. Соответствие требованиям задания
 
 | № | Требование | Где выполнено |
 |---|---|---|
-| 1 | Git + документ с описанием проекта | Репозиторий Git, этот документ |
-| 2 | 60 use cases, из них 20 MVP | Документ «Use cases» |
-| 3 | Сервер + БД + UI в Docker-контейнерах | `docker-compose.yml`: app, db, minio |
+| 1 | Git + документ с описанием проекта | Этот репозиторий и этот документ |
+| 2 | 60 use cases, из них 20 MVP | [use-cases.md](use-cases.md) |
+| 3 | Сервер + БД + UI в Docker-контейнерах | [`docker-compose.yml`](../docker-compose.yml): app, db, minio |
 | 4 | 2 CRUD по двум бизнес-сущностям | Книга и Бронь (раздел 3) |
 | 5 | Авторизация, роли Client и Admin | Spring Security, роли `CLIENT` и `ADMIN` |
 | +1 | Интеграция | S3-хранилище MinIO для обложек (раздел 5) |

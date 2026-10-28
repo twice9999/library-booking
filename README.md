@@ -55,4 +55,18 @@ src/main/java/ru/library/booking
 docs/              описание проекта и 60 use cases
 ```
 
-Подробности — в [docs/Описание_проекта.docx](docs/Описание_проекта.docx) и [docs/Use_cases.docx](docs/Use_cases.docx).
+## Документация
+
+- [Описание проекта](docs/description.md): роли, CRUD, архитектура, интеграция с S3, модель данных
+- [Use cases](docs/use-cases.md): 60 пользовательских сценариев, из них 20 MVP
+
+## Соответствие требованиям задания
+
+| № | Требование | Где выполнено |
+|---|---|---|
+| 1 | Git + описание проекта | Этот репозиторий, [docs/description.md](docs/description.md) |
+| 2 | 60 use cases, 20 MVP | [docs/use-cases.md](docs/use-cases.md) |
+| 3 | Сервер + БД + UI в Docker | [docker-compose.yml](docker-compose.yml), [Dockerfile](Dockerfile) |
+| 4 | 2 CRUD по бизнес-сущностям | Книга ([BookController](src/main/java/ru/library/booking/controller/BookController.java)) и Бронь ([ReservationController](src/main/java/ru/library/booking/controller/ReservationController.java)) |
+| 5 | Авторизация Client / Admin | [SecurityConfig](src/main/java/ru/library/booking/config/SecurityConfig.java) |
+| +1 | Интеграция | S3 (MinIO): [MinioFileStorage](src/main/java/ru/library/booking/storage/MinioFileStorage.java) |
