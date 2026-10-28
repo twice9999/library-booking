@@ -68,10 +68,26 @@ public class DataInitializer implements CommandLineRunner {
             String file = String.format("demo-covers/%02d.png", i + 1);
             String key = String.format("covers/demo-%02d.png", i + 1);
             try (InputStream in = new ClassPathResource(file).getInputStream()) {
-                storage.put(key, in.readAllBytes());
+                putWithRetry(key, in.readAllBytes());
                 saved.get(i).setCoverKey(key);
             } catch (Exception e) {
                 log.warn("Не удалось добавить обложку {}: {}", file, e.getMessage());
+            }
+        }
+    }
+
+    /** В Docker хранилище может стартовать чуть позже приложения, поэтому пробуем несколько раз. */
+    private void putWithRetry(String key, byte[] data) throws InterruptedException {
+        for (int attempt = 1; ; attempt++) {
+            try {
+                storage.put(key, data);
+                return;
+            } catch (RuntimeException e) {
+                if (attempt >= 15) {
+                    throw e;
+                }
+                log.info("Хранилище ещё не готово, повтор через 2 секунды ({}/15)", attempt);
+                Thread.sleep(2000);
             }
         }
     }
